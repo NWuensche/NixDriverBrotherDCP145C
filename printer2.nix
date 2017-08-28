@@ -1,4 +1,4 @@
-{ pkgs, stdenv, fetchurl, cups, dpkg, ghostscript, patchelf, a2ps, coreutils, gnused, gawk, file, makeWrapper, tcsh }:
+{ pkgs, stdenv, fetchurl, cups, dpkg, ghostscript, patchelf, a2ps, coreutils, gnused, gawk, file, makeWrapper, tcsh , gnugrep}:
 
 stdenv.mkDerivation rec {
   name = "mfc2j47dd0dw-cupswrapper-${version}";
@@ -33,7 +33,7 @@ stdenv.mkDerivation rec {
     #install -m 755 $srcLPD $out/lib/cups/filter/brlpdwrapperDCP145C
     cp $srcLPD ./brlpdwrapperDCP145C
     patchShebangs ./brlpdwrapperDCP145C
-    substituteInPlace brlpdwrapperDCP145C \
+    substituteInPlace ./brlpdwrapperDCP145C \
       --replace /usr "$out/usr" \
       --replace CHANGE "$out/share/cups/model/brdcp145c_cups.ppd"\
       --replace brprintconf_dcp145c "$out/usr/bin/brprintconf_dcp145c"
@@ -51,6 +51,10 @@ stdenv.mkDerivation rec {
 
     wrapProgram  $out/lib/cups/filter/brlpdwrapperDCP145C \
      --prefix PATH ":" "$out/usr/bin:${stdenv.lib.makeBinPath [ coreutils ]}"
+    wrapProgram  $out/usr/local/Brother/Printer/dcp145c/lpd/brdcp145cfilter \
+     --prefix PATH ":" "$out/usr/bin:${stdenv.lib.makeBinPath [ coreutils gnugrep]}"
+    #    wrapProgram  $out/usr/local/Brother/Printer/dcp145c/lpd/.brdcp145cfilter-wrapped \
+    # --prefix PATH ":" "$out/usr/bin:${stdenv.lib.makeBinPath [ coreutils ]}"
     wrapProgram $out/usr/local/Brother/Printer/dcp145c/lpd/psconvertij2 \
       --prefix PATH ":" ${ stdenv.lib.makeBinPath [ gnused coreutils gawk ] }
     wrapProgram $out/usr/local/Brother/Printer/dcp145c/lpd/filterdcp145c \
@@ -59,6 +63,7 @@ stdenv.mkDerivation rec {
 
       postInstall = ''
     chmod 0777 $out/lib/cups/filter/brlpdwrapperDCP145C
+    chmod 0777 $out/lib/cups/filter/.brlpdwrapperDCP145C-wrapped
       '';
 
   meta = {
