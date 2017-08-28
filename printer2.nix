@@ -25,7 +25,7 @@ stdenv.mkDerivation rec {
     sed -i '/GHOST_SCRIPT=/c\GHOST_SCRIPT=gs' usr/local/Brother/Printer/dcp145c/lpd/psconvertij2
 
 #    patchelf --set-interpreter ${stdenv.glibc.out}/lib/ld-linux.so.2 usr/local/Brother/lpd/rastertobrij2
-    patchelf --set-interpreter ${stdenv.glibc}/lib/ld-linux.so.2 usr/bin/brprintconf_dcp145c
+    ##    patchelf --set-interpreter ${stdenv.glibc}/lib/ld-linux.so.2 usr/bin/brprintconf_dcp145c
 
     #    ln -sr usr/lib/libbrcompij2.so.1.0.2 -T usr/lib/libbrcompij2.so.1
     #patchelf --set-rpath $out/usr/lib usr/local/Brother/lpd/rastertobrij2
@@ -41,7 +41,7 @@ stdenv.mkDerivation rec {
       --replace /usr/local/Brother/ "$out/usr/local/Brother/"
 
     mkdir -p $out
-    #mkdir -p $out/weg
+    #    mkdir -p $out/weg
     mkdir -p $out/lib/cups/filter/
     mkdir -p $out/share/cups/model
     cp -r -v usr $out
