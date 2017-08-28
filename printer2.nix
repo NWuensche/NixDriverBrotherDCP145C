@@ -41,7 +41,7 @@ stdenv.mkDerivation rec {
       --replace /usr/local/Brother/ "$out/usr/local/Brother/"
 
     mkdir -p $out
-    mkdir -p $out/weg
+    #mkdir -p $out/weg
     mkdir -p $out/lib/cups/filter/
     mkdir -p $out/share/cups/model
     cp -r -v usr $out
@@ -50,11 +50,11 @@ stdenv.mkDerivation rec {
 
 
     wrapProgram  $out/lib/cups/filter/brlpdwrapperDCP145C \
-     --prefix PATH ":" "$out/usr/bin:${stdenv.lib.makeBinPath [ coreutils ]}"
+     --prefix PATH ":" "$out/usr/bin:${stdenv.lib.makeBinPath [ coreutils gnugrep]}"
     wrapProgram  $out/usr/local/Brother/Printer/dcp145c/lpd/brdcp145cfilter \
      --prefix PATH ":" "$out/usr/bin:${stdenv.lib.makeBinPath [ coreutils gnugrep]}"
-    #    wrapProgram  $out/usr/local/Brother/Printer/dcp145c/lpd/.brdcp145cfilter-wrapped \
-    # --prefix PATH ":" "$out/usr/bin:${stdenv.lib.makeBinPath [ coreutils ]}"
+    #        wrapProgram  $out/usr/local/Brother/Printer/dcp145c/lpd/.brdcp145cfilter-wrapped \
+    # --prefix PATH ":" "$out/usr/bin:${stdenv.lib.makeBinPath [ coreutils gnugrep]}"
     wrapProgram $out/usr/local/Brother/Printer/dcp145c/lpd/psconvertij2 \
       --prefix PATH ":" ${ stdenv.lib.makeBinPath [ gnused coreutils gawk ] }
     wrapProgram $out/usr/local/Brother/Printer/dcp145c/lpd/filterdcp145c \
