@@ -26,7 +26,10 @@ stdenv.mkDerivation rec {
 
 #    patchelf --set-interpreter ${stdenv.glibc.out}/lib/ld-linux.so.2 usr/local/Brother/lpd/rastertobrij2
     ##    patchelf --set-interpreter ${stdenv.glibc}/lib/ld-linux.so.2 usr/bin/brprintconf_dcp145c
-
+    patchelf --set-interpreter ${stdenv.glibc}/lib/libc.so.6 usr/local/Brother/Printer/dcp145c/lpd/brdcp145cfilter
+    patchelf --set-interpreter ${stdenv.glibc}/lib/libm.so.6 usr/local/Brother/Printer/dcp145c/lpd/brdcp145cfilter
+    patchelf --set-interpreter ${stdenv.glibc}/lib/ld-linux.so.2 usr/local/Brother/Printer/dcp145c/lpd/brdcp145cfilter
+ 
     #    ln -sr usr/lib/libbrcompij2.so.1.0.2 -T usr/lib/libbrcompij2.so.1
     #patchelf --set-rpath $out/usr/lib usr/local/Brother/lpd/rastertobrij2
 
@@ -41,7 +44,6 @@ stdenv.mkDerivation rec {
       --replace /usr/local/Brother/ "$out/usr/local/Brother/"
 
     mkdir -p $out
-    #    mkdir -p $out/weg
     mkdir -p $out/lib/cups/filter/
     mkdir -p $out/share/cups/model
     cp -r -v usr $out
@@ -53,8 +55,6 @@ stdenv.mkDerivation rec {
      --prefix PATH ":" "$out/usr/bin:${stdenv.lib.makeBinPath [ coreutils gnugrep]}"
     wrapProgram  $out/usr/local/Brother/Printer/dcp145c/lpd/brdcp145cfilter \
      --prefix PATH ":" "$out/usr/bin:${stdenv.lib.makeBinPath [ coreutils gnugrep]}"
-    #        wrapProgram  $out/usr/local/Brother/Printer/dcp145c/lpd/.brdcp145cfilter-wrapped \
-    # --prefix PATH ":" "$out/usr/bin:${stdenv.lib.makeBinPath [ coreutils gnugrep]}"
     wrapProgram $out/usr/local/Brother/Printer/dcp145c/lpd/psconvertij2 \
       --prefix PATH ":" ${ stdenv.lib.makeBinPath [ gnused coreutils gawk ] }
     wrapProgram $out/usr/local/Brother/Printer/dcp145c/lpd/filterdcp145c \
@@ -64,6 +64,12 @@ stdenv.mkDerivation rec {
       postInstall = ''
     chmod 0777 $out/lib/cups/filter/brlpdwrapperDCP145C
     chmod 0777 $out/lib/cups/filter/.brlpdwrapperDCP145C-wrapped
+      '';
+
+      postFixup = ''
+        patchShebangs $out/usr/local/Brother/Printer/dcp145c/lpd/filterdcp145c
+        patchShebangs $out/usr/local/Brother/Printer/dcp145c/lpd/brdcp145cfilter
+        patchShebangs  $out/usr/local/Brother/Printer/dcp145c/lpd/.brdcp145cfilter-wrapped 
       '';
 
   meta = {
